@@ -3,13 +3,13 @@ package com.fortest.jwtsecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.server.resource.BearerTokenAuthenticationToken;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +35,9 @@ public class DgJwtAuthenticationProvider implements AuthenticationProvider {
         try {
             return this.jwtDecoder.decode(token.getToken());
         } catch (JwtException e) {
-            throw new AuthenticationServiceException("jwt관련 오류", e);
+            throw new InvalidBearerTokenException("jwt관련 오류", e);
         } catch (RuntimeException e) {
-            throw new AuthenticationServiceException("jwt 파싱 관련 오류", e);
+            throw new InvalidBearerTokenException("jwt 파싱 관련 오류", e);
         }
     }
 }

@@ -11,22 +11,28 @@ import javax.servlet.http.HttpServletResponse;
 @Configuration
 @RequiredArgsConstructor
 public class ExceptionHandleConfig {
-
-    private final FilterExceptionManager filterExceptionManager;
-
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
-            filterExceptionManager.setException(request, "당신의 토큰으로는 접근할 수 없어요!", HttpServletResponse.SC_FORBIDDEN);
-            filterExceptionManager.handleException(request, response);
+            handleException(response, accessDeniedException.getMessage() + ": 당신의 토큰으로는 접근할 수 없어 !", HttpServletResponse.SC_FORBIDDEN);
         };
     }
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {
-            filterExceptionManager.setException(request, "토큰을 찾을 수 없어요!", HttpServletResponse.SC_UNAUTHORIZED);
-            filterExceptionManager.handleException(request, response);
+            handleException(response, authException.getMessage() + ": 당신의 토큰은 잘못되었어 !", HttpServletResponse.SC_UNAUTHORIZED);
         };
+    }
+
+    private void handleException(HttpServletResponse response, String message, int statusCode) {
+        response.setStatus(statusCode);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+        try {
+            response.getWriter().write("{\"message\":\"" + message + "\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

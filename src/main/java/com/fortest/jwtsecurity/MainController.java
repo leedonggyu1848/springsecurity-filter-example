@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,4 +52,21 @@ public class MainController {
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(header, claims);
         return jwtEncoder.encode(jwtEncoderParameters);
     }
-}
+
+    @GetMapping("/get-tokens")
+    public Jwt getEncodedToken(
+        @RequestParam String user,
+        @RequestParam String role1,
+        @RequestParam String role2) {
+        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+            .issuedAt(Instant.now())
+            .expiresAt(Instant.now().plusSeconds(3600))
+            .subject(user)
+            .claim("roles", List.of(role1.toUpperCase(), role2.toUpperCase()))
+            .build();
+        JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(header, claims);
+        return jwtEncoder.encode(jwtEncoderParameters);
+    }
+
+    }
