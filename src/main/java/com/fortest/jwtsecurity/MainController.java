@@ -2,6 +2,7 @@ package com.fortest.jwtsecurity;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -27,6 +28,12 @@ public class MainController {
     @Secured("ROLE_ADMIN")
     public Token getAdminToken(JwtAuthenticationToken jwtToken) {
         return new Token(jwtToken.getToken(), jwtToken.getAuthorities());
+    }
+
+    @GetMapping("/auth")
+    @PreAuthorize("isAuthenticated()")
+    public Jwt auth(JwtAuthenticationToken jwtToken) {
+        return jwtToken.getToken();
     }
 
     @GetMapping("/introspect")
@@ -68,5 +75,4 @@ public class MainController {
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(header, claims);
         return jwtEncoder.encode(jwtEncoderParameters);
     }
-
-    }
+}

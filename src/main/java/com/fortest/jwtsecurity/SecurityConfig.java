@@ -35,7 +35,7 @@ public class SecurityConfig {
 //            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt).build();
             .oauth2ResourceServer()
                 .bearerTokenResolver(new DefaultBearerTokenResolver())
-                    .jwt()
+                .jwt()
                     .authenticationManager(authenticationManager)
                 .and()
                 .accessDeniedHandler(accessDeniedHandler)

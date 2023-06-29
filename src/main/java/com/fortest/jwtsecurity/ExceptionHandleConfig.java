@@ -16,6 +16,7 @@ public class ExceptionHandleConfig {
         return (request, response, accessDeniedException) -> {
             handleException(response, accessDeniedException.getMessage() + ": 당신의 토큰으로는 접근할 수 없어 !", HttpServletResponse.SC_FORBIDDEN);
         };
+
     }
 
     @Bean
